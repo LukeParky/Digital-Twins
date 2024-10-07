@@ -28,5 +28,5 @@ jobs:
           git config --global user.name 'GRI Admin'
           git config --global user.email '175378150+GRI-Admin@users.noreply.github.com'
           git config pull.rebase false
-          git pull ${{ env.LONG_LIVED_BRANCH }}
+          git pull origin ${{ env.LONG_LIVED_BRANCH }}
           git push
