@@ -23,7 +23,6 @@ jobs:
         with:
           ref: ${{ env.DEFAULT_BRANCH }}
           fetch-depth: 0
-          token: ${{ secrets.PUSH_PAGES_PAT }}
       - name: Merge with master
         run: |
           git config --global user.name 'GRI Admin'
