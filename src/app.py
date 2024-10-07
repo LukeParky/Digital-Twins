@@ -163,7 +163,7 @@ def generate_model() -> Response:
     Generates a flood model for a given area.
     Supported methods: POST
 
-    ReturnsHHHH
+    ReturnsHHHHaaaaa
     -------
     Response
         ACCEPTED is the expected response. Response body contains Celery taskId
