@@ -40,17 +40,18 @@ Create API keys for each of these services. You may need to create an account an
    
 1. Create a file called `.env` in the project root, copy the contents of `.env.template` and fill in all blank fields unless a comment says you can leave it blank.
 Blank fields to fill in include things like the `POSTGRES_PASSWORD` variable and `CESIUM_ACCESS_TOKEN`. You may configure other variables as needed.
-    
+
+1. From the University of Canterbury network drives, copy `U:/Research/FloodRiskResearch/DigitalTwin/stored_data/roof_surfaces_data` to a new directory `Digital-Twins/roof_surfaces_data`.
+   * This is a temporary solution until we have full approval for this dataset. [Issue #283](https://github.com/GeospatialResearch/Digital-Twins/issues/283). If you are an external developer in need of access please contact us.
 1. From project root, run the command `docker compose up -d` to run the database, backend web servers, and helper services.
    
 1. You may inspect the logs of the backend using `docker compose logs -f backend celery_worker`
 
 
 ## Using the Digital Twin application
-1. With the docker compose  application running, the default web address is <http://localhost:5173> to view the web application.
-1. Choose input variables from the available input boxes at the top of the page.
-1. Select an area using Shift+click+drag to draw a bounding box of your area to start generating a model. It will take a long time, especially for the first run of an area.
-1. Monitor progress by checking the logs using `docker compose logs -f celery_worker`.
+1. With the docker compose  application running, the default web address is <http://localhost:3001> to view the web application.
+   * Choose data catalogue items with the "Explore map data" button.
+   * To perform custom modelling, "Ōtākaro Digital Twin Custom Analysis" has configurable models.
 1. The API is available by default on <http://localhost:5000>. Visit <https://geospatialresearch.github.io/Digital-Twins/api> for API documentation.
 
 

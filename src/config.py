@@ -93,8 +93,16 @@ class EnvVariable:  # pylint: disable=too-few-public-methods
     DEBUG_TRACEBACK = _get_bool_env_variable("DEBUG_TRACEBACK", default=False)
     TEST_DATABASE_INTEGRATION = _get_bool_env_variable("TEST_DATABASE_INTEGRATION", default=True)
 
+    ROOF_SURFACE_DATASET_PATH = pathlib.Path(
+        _get_env_variable("ROOF_SURFACE_DATASET_PATH",
+                          default="./roof_surfaces_data/clipped_CCC_Lynker_RoofMaterials_Update_2023.gdb"))
+
+    ROAD_DATASET_PATH = pathlib.Path(
+        _get_env_variable("ROAD_DATASET_PATH",
+                          default="./ccc_chch_roads_polygons.gpkg")
+    )
+
     DATA_DIR = pathlib.Path(_get_env_variable("DATA_DIR"))
-    DATA_DIR_REC = pathlib.Path(_get_env_variable("DATA_DIR_REC"))
     DATA_DIR_MODEL_OUTPUT = pathlib.Path(_get_env_variable("DATA_DIR_MODEL_OUTPUT"))
     DATA_DIR_GEOSERVER = pathlib.Path(_get_env_variable("DATA_DIR_GEOSERVER"))
     FLOOD_MODEL_DIR = pathlib.Path(_get_env_variable("FLOOD_MODEL_DIR"))
@@ -109,6 +117,8 @@ class EnvVariable:  # pylint: disable=too-few-public-methods
 
     GEOSERVER_HOST = _get_env_variable("GEOSERVER_HOST", default="http://localhost")
     GEOSERVER_PORT = _get_env_variable("GEOSERVER_PORT", default="8088")
+    GEOSERVER_INTERNAL_HOST = _get_env_variable("GEOSERVER_INTERNAL_HOST", default=GEOSERVER_HOST)
+    GEOSERVER_INTERNAL_PORT = _get_env_variable("GEOSERVER_INTERNAL_PORT", default=GEOSERVER_PORT)
     GEOSERVER_ADMIN_NAME = _get_env_variable("GEOSERVER_ADMIN_NAME", default="admin")
     GEOSERVER_ADMIN_PASSWORD = _get_env_variable("GEOSERVER_ADMIN_PASSWORD", default="geoserver")
 

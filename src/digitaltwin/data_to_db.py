@@ -99,11 +99,12 @@ def get_geospatial_layer_info(layer_row: pd.Series) -> Tuple[str, int, str, str]
 
 
 def get_vector_data_id_not_in_db(
-        engine: Engine,
-        vector_data: gpd.GeoDataFrame,
-        table_name: str,
-        unique_column_name: str,
-        area_of_interest: gpd.GeoDataFrame) -> Set[int]:
+    engine: Engine,
+    vector_data: gpd.GeoDataFrame,
+    table_name: str,
+    unique_column_name: str,
+    area_of_interest: gpd.GeoDataFrame
+) -> Set[int]:
     """
     Get the IDs from the fetched vector_data that are not present in the specified database table
     for the area of interest.
@@ -125,7 +126,7 @@ def get_vector_data_id_not_in_db(
     -------
     Set[int]
         The set of IDs from the fetched vector_data that are not present in the specified table in the database.
-    """  # noqa: D400
+    """
     # Get the unique IDs from the vector_data
     vector_data_ids = set(vector_data[unique_column_name])
     # Fetch the unique IDs from the specified table that intersect with the area of interest
@@ -146,9 +147,10 @@ def get_vector_data_id_not_in_db(
 
 
 def nz_geospatial_layers_data_to_db(
-        engine: Engine,
-        crs: int = 2193,
-        verbose: bool = False) -> None:
+    engine: Engine,
+    crs: int = 2193,
+    verbose: bool = False
+) -> None:
     """
     Fetch New Zealand geospatial layers data using 'geoapis' and store it into the database.
 
@@ -182,9 +184,10 @@ def nz_geospatial_layers_data_to_db(
 
 
 def get_non_intersection_area_from_db(
-        engine: Engine,
-        catchment_area: gpd.GeoDataFrame,
-        table_name: str) -> gpd.GeoDataFrame:
+    engine: Engine,
+    catchment_area: gpd.GeoDataFrame,
+    table_name: str
+) -> gpd.GeoDataFrame:
     """
     Get the non-intersecting area from the catchment area and user log information table in the database
     for the specified table.
@@ -207,24 +210,21 @@ def get_non_intersection_area_from_db(
     ------
     NoNonIntersectionError
         If the non-intersecting area is empty, it suggests that the catchment area is already fully covered.
-    """  # noqa: D400
+    """
     # Create the 'user_log_information' table if it doesn't exist
     create_table(engine, UserLogInfo)
     # Extract the geometry of the catchment area
-    catchment_polygon = catchment_area["geometry"][0]
+    catchment_wkt = catchment_area.geometry[0].wkt
     # Build the SQL query to find intersections between the user log information and the catchment area
     command_text = f"""
     SELECT *
-    FROM (
-        SELECT *
-        FROM {UserLogInfo.__tablename__}
-        WHERE :table_name = ANY(source_table_list)
-    ) AS sub
-    WHERE ST_Intersects(sub.geometry, ST_GeomFromText(:catchment_polygon, 2193));
+    FROM {UserLogInfo.__tablename__}
+    WHERE :table_name = ANY(source_table_list)
+    AND ST_Intersects(geometry, ST_GeomFromText(:catchment_polygon, 2193));
     """
     query = text(command_text).bindparams(
-        table_name=str(table_name),
-        catchment_polygon=str(catchment_polygon)
+        table_name=table_name,
+        catchment_polygon=catchment_wkt
     )
     # Execute the SQL query and retrieve the intersections as a GeoDataFrame
     user_log_intersections = gpd.GeoDataFrame.from_postgis(query, engine, geom_col="geometry")
@@ -241,13 +241,14 @@ def get_non_intersection_area_from_db(
 
 
 def process_new_non_nz_geospatial_layers(
-        engine: Engine,
-        data_provider: str,
-        layer_id: int,
-        table_name: str,
-        area_of_interest: gpd.GeoDataFrame,
-        crs: int = 2193,
-        verbose: bool = False) -> None:
+    engine: Engine,
+    data_provider: str,
+    layer_id: int,
+    table_name: str,
+    area_of_interest: gpd.GeoDataFrame,
+    crs: int = 2193,
+    verbose: bool = False
+) -> None:
     """
     Fetch new non-NZ geospatial layers data using 'geoapis' and store it into the database.
 
@@ -281,14 +282,15 @@ def process_new_non_nz_geospatial_layers(
 
 
 def process_existing_non_nz_geospatial_layers(
-        engine: Engine,
-        data_provider: str,
-        layer_id: int,
-        table_name: str,
-        unique_column_name: str,
-        area_of_interest: gpd.GeoDataFrame,
-        crs: int = 2193,
-        verbose: bool = False) -> None:
+    engine: Engine,
+    data_provider: str,
+    layer_id: int,
+    table_name: str,
+    unique_column_name: str,
+    area_of_interest: gpd.GeoDataFrame,
+    crs: int = 2193,
+    verbose: bool = False
+) -> None:
     """
     Fetch existing non-NZ geospatial layers data using 'geoapis' and store it into the database.
 
@@ -334,10 +336,11 @@ def process_existing_non_nz_geospatial_layers(
 
 
 def non_nz_geospatial_layers_data_to_db(
-        engine: Engine,
-        catchment_area: gpd.GeoDataFrame,
-        crs: int = 2193,
-        verbose: bool = False) -> None:
+    engine: Engine,
+    catchment_area: gpd.GeoDataFrame,
+    crs: int = 2193,
+    verbose: bool = False
+) -> None:
     """
     Fetch non-NZ geospatial layers data using 'geoapis' and store it into the database.
 
@@ -379,10 +382,11 @@ def non_nz_geospatial_layers_data_to_db(
 
 
 def store_geospatial_layers_data_to_db(
-        engine: Engine,
-        catchment_area: gpd.GeoDataFrame,
-        crs: int = 2193,
-        verbose: bool = False) -> None:
+    engine: Engine,
+    catchment_area: gpd.GeoDataFrame,
+    crs: int = 2193,
+    verbose: bool = False
+) -> None:
     """
     Fetch geospatial layers data using 'geoapis' and store it into the database.
 
@@ -420,7 +424,7 @@ def user_log_info_to_db(engine: Engine, catchment_area: gpd.GeoDataFrame) -> Non
     non_nz_geo_layers = get_non_nz_geospatial_layers(engine)
     table_list = non_nz_geo_layers["table_name"].tolist()
     # Get the catchment geometry
-    catchment_geom = catchment_area["geometry"].to_wkt().iloc[0]
+    catchment_geom = catchment_area.geometry[0].wkt
     # Create the query object
     query = UserLogInfo(source_table_list=table_list, geometry=catchment_geom)
     # Execute the query
